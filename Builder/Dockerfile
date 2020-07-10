@@ -3,13 +3,13 @@ LABEL maintainer="jamie@fearoffish.com"
 
 # Add basic packages
 RUN apk add --no-cache \
-      build-base \
-      postgresql-dev \
-      git \
-      nodejs \
-      yarn \
-      tzdata \
-      file
+    build-base \
+    postgresql-dev \
+    git \
+    nodejs \
+    yarn \
+    tzdata \
+    file
 
 WORKDIR /app
 
@@ -28,13 +28,13 @@ RUN bundle config --local frozen 1 && \
 # Install Ruby gems (for production only)
 ONBUILD COPY Gemfile* /app/
 ONBUILD RUN bundle config --local without 'development test' && \
-            bundle install -j4 --retry 3 && \
-            # Remove unneeded gems
-            bundle clean --force && \
-            # Remove unneeded files from installed gems (cached *.gem, *.o, *.c)
-            rm -rf /usr/local/bundle/cache/*.gem && \
-            find /usr/local/bundle/gems/ -name "*.c" -delete && \
-            find /usr/local/bundle/gems/ -name "*.o" -delete
+    bundle install -j4 --retry 3 && \
+    # Remove unneeded gems
+    bundle clean --force && \
+    # Remove unneeded files from installed gems (cached *.gem, *.o, *.c)
+    rm -rf /usr/local/bundle/cache/*.gem && \
+    find /usr/local/bundle/gems/ -name "*.c" -delete && \
+    find /usr/local/bundle/gems/ -name "*.o" -delete
 
 # Copy the whole application folder into the image
 ONBUILD COPY . /app
@@ -48,16 +48,12 @@ ONBUILD COPY . /app
 #      if the master key is missing. Because on CI there is no master key,
 #      we hide the credentials while compiling assets (by renaming them before and after)
 #
-ONBUILD RUN mv config/credentials.yml.enc config/credentials.yml.enc.bak 2>/dev/null || true
-ONBUILD RUN mv config/credentials/staging.yml.enc config/credentials/staging.yml.enc.bak 2>/dev/null || true
-ONBUILD RUN mv config/credentials/production.yml.enc config/credentials/production.yml.enc.bak 2>/dev/null || true
+ONBUILD RUN mv config/credentials config/credentials.bak 2>/dev/null || true
 ONBUILD RUN RAILS_ENV=production \
-            SECRET_KEY_BASE=dummy \
-            RAILS_MASTER_KEY=dummy \
-            bundle exec rails assets:precompile
-ONBUILD RUN mv config/credentials.yml.enc.bak config/credentials.yml.enc 2>/dev/null || true
-ONBUILD RUN mv config/credentials/staging.yml.enc.bak config/credentials/staging.yml.enc 2>/dev/null || true
-ONBUILD RUN mv config/credentials/production.yml.enc.bak config/credentials/production.yml.enc 2>/dev/null || true
+    SECRET_KEY_BASE=dummy \
+    RAILS_MASTER_KEY=dummy \
+    bundle exec rails assets:precompile
+ONBUILD RUN mv config/credentials.bak config/credentials 2>/dev/null || true
 
 # Remove folders not needed in resulting image
 ONBUILD RUN rm -rf node_modules tmp/cache vendor/bundle test spec
