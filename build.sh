@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
 cd Builder
-bundle install
+bundle update
 docker build -t fearoffish/rails-base-builder .
-docker push fearoffish/rails-base-builder
+
+cd ../Test
+bundle update
+docker build -t fearoffish/rails-base-test .
 
 cd ../Final
 docker build -t fearoffish/rails-base-final .
-docker push fearoffish/rails-base-final
+
+cd ..

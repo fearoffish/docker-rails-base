@@ -104,3 +104,21 @@ gem 'friendly_id'
 
 # Redis adapter for action cable
 gem 'redis', '4.2.1'
+
+# A set of development and test gems
+gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+gem 'annotate'
+gem 'brakeman'
+gem 'bundler-audit', github: 'rubysec/bundler-audit'
+gem 'standard'
+
+gem 'rspec-rails', '~> 4.0.0'
+gem 'factory_bot_rails'
+gem 'faker'
+gem 'pry-byebug'
+gem 'simplecov'
+
+gem 'rubocop-rails_config'
+gem 'rubocop-rails', require: false
+gem 'rubocop-performance', require: false
+gem 'rubocop-rspec', require: false
